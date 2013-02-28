@@ -10,6 +10,8 @@ Author URI: kaileylampert.com
 // replacement [gallery] shortcode. Does everything core does, plus a little more
 require plugin_dir_path(__FILE__) . 'shortcode.php';
 
+require plugin_dir_path(__FILE__) . 'mce-integration.php';
+
 // optional
 // require plugin_dir_path(__FILE__) . 'ajax-layer.php';
 
