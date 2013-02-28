@@ -1,11 +1,12 @@
 <?php
-//Plugin Name: Easy Albums
-//Description: Put a group of galleries into an album, then put the album in a page.
-//Version: 2013.02.22
 /*
-	Quick release!
-	It works, but it's not a finished product. I have some fine-tuning to do, but it may just serve as a good starting point for you.
+Plugin Name: Easy Albums
+Description: Put a group of galleries into an album, then put the album in a page.
+Version: 2013.02.28
+Author: Kailey Lampert
+Author URI: kaileylampert.com
 */
+
 remove_shortcode( 'gallery', 'gallery_shortcode' );
 add_shortcode( 'gallery', 'gallery_shortcode_plus' );
 /**
