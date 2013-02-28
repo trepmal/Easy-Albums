@@ -91,7 +91,7 @@ class Albums_MCE_Button {
 	function window_cb() {
 
 		// check for rights
-		if ( !current_user_can('edit_pages') && !current_user_can('edit_posts') && 2==3)
+		if ( !current_user_can('edit_pages') && !current_user_can('edit_posts') )
 			die(__("You are not allowed to be here"));
 
 		$window = plugin_dir_path(__FILE__) .'mce/window.php';

@@ -1,7 +1,7 @@
 // http://tinymce.moxiecode.com/wiki.php/API3:class.tinymce.Plugin
 
 (function() {
-	
+
 	tinymce.create('tinymce.plugins.albums', {
 		/**
 		 * Initializes the plugin, this will be executed after the plugin has been created.
@@ -17,7 +17,7 @@
 			//this command will be executed when the button in the toolbar is clicked
 			ed.addCommand('mcealbums', function() {
 				ed.windowManager.open({
-				    // call content via admin-ajax, no need to know the full plugin path
+					// call content via admin-ajax, no need to know the full plugin path
 					file : ajaxurl + '?action=albums_tinymce',
 					width : 360 + ed.getLang('albums.delta_width', 0),
 					height : 210 + ed.getLang('albums.delta_height', 0),
