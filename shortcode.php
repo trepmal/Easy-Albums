@@ -1,4 +1,6 @@
 <?php
+if ( ! defined('ABSPATH') )
+	die('-1');
 
 remove_shortcode( 'gallery', 'gallery_shortcode' );
 add_shortcode( 'gallery', 'gallery_shortcode_plus' );

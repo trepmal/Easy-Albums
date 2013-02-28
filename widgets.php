@@ -1,4 +1,7 @@
 <?php
+if ( ! defined('ABSPATH') )
+	die('-1');
+
 // Widgets
 
 add_action( 'widgets_init', 'register_easy_albums_widgets' );

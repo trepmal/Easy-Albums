@@ -1,4 +1,6 @@
 <?php
+if ( ! defined('ABSPATH') )
+	die('-1');
 
 $albums_mce_button = new Albums_MCE_Button();
 

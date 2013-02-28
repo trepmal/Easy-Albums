@@ -6,6 +6,8 @@ Version: 2013.02.28
 Author: Kailey Lampert
 Author URI: kaileylampert.com
 */
+if ( ! defined('ABSPATH') )
+	die('-1');
 
 // replacement [gallery] shortcode. Does everything core does, plus a little more
 require plugin_dir_path(__FILE__) . 'shortcode.php';

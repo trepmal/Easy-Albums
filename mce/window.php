@@ -1,6 +1,7 @@
 <?php
 if ( ! defined('ABSPATH') )
-	die('You are not allowed to call this page directly.');
+	die('-1');
+
 @header( 'Content-Type: ' . get_option('html_type') . '; charset=' . get_option('blog_charset') );
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">

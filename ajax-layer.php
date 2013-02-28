@@ -1,11 +1,12 @@
 <?php
-
+if ( ! defined('ABSPATH') )
+	die('-1');
 
 new Galleries_Albums_Ajax_Layer();
 
 /** Known issues
- * with history.pushState, you can be in a sub-gallery, refresh the page, and not lose your place
- * however, on page refresh, the albumhtml is lost, rendering the back link useless
+ * with history.pushState, you can be in a sub-gallery, refresh the page, and remain in the sub-gallery
+ * however, on page refresh, the original albumhtml is lost, rendering the back link useless
  * 
  */
 
@@ -38,7 +39,6 @@ class Galleries_Albums_Ajax_Layer {
 				thisalb = thisimg.closest('.album'),
 				atts = thisalb.prev('.att_string').val();
 
-
 			history.pushState({}, '', thisimg.attr('href') );
 
 			// basically, get outerHtml
@@ -68,7 +68,6 @@ class Galleries_Albums_Ajax_Layer {
 			jQuery(this).parent('p').prev('h2').remove(); //remove gallery title
 			jQuery(this).parent('p').remove(); //remove back button
 		});
-
 
 		</script><?php
 	}
