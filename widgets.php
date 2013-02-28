@@ -1,10 +1,12 @@
 <?php
 // Widgets
 
-add_action( 'widgets_init', 'register_galleries_widget' );
-function register_galleries_widget() {
+add_action( 'widgets_init', 'register_easy_albums_widgets' );
+function register_easy_albums_widgets() {
 	register_widget( 'Galleries_Widget' );
+	register_widget( 'Albums_Widget' );
 }
+
 class Galleries_Widget extends WP_Widget {
 
 	function __construct() {
@@ -79,10 +81,6 @@ jQuery(function($) {
 	} //end form()
 }
 
-add_action( 'widgets_init', 'register_albums_widget' );
-function register_albums_widget() {
-	register_widget( 'Albums_Widget' );
-}
 class Albums_Widget extends WP_Widget {
 
 	function __construct() {
