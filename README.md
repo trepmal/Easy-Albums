@@ -25,4 +25,4 @@ You can display any created album in a sidebar by using the Display Album widget
 
 Ajax
 ----
-There is an optional, and still somewhat quirky, ajax layer available. To turn it on, uncomment the appropriate `require` line at the top of `galleries-albums.php`.
+There is an optional, and still somewhat quirky, ajax layer available. To turn it on, uncomment the appropriate `require` line at the top of `easy-albums.php`.

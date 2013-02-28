@@ -179,6 +179,10 @@ function gallery_shortcode_plus($attr) {
 			$link = str_replace( wp_get_attachment_url( $id ), $url, $link );
 		}
 
+		// for easier lightboxing
+		if ( apply_filters( 'easy_album_insert_rel', true ) )
+			$link = str_replace( 'a href', "a rel='{$selector}' href", $link );
+
 		if ( $nolinks )
 			$link = strip_tags( $link, '<img>' );
 
