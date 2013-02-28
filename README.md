@@ -1,4 +1,4 @@
 Easy-Albums
 ===========
 
-An easy album manager for WordPress... ##
+An easy album manager for WordPress
