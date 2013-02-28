@@ -303,7 +303,12 @@ class Galleries_and_Albums {
 function get_sub_gallery( $back, $gal_id, $att_string ) {
 	$back = "<p><a class='backtoalbum' href='$back'>&larr; Back</a></p>";
 	$gal = get_post( $gal_id );
-	return "<h2 id='albumgal-{$gal->ID}'>{$gal->post_title}</h2>{$back}". do_shortcode( str_replace(']', $att_string.']', $gal->post_content ) );
+
+	// insert inheritable shortcode attributes
+	$pc = $gal->post_content;
+	$content = preg_replace( '/\[gallery([^[]*)\]/', '[gallery$1'.$att_string.']', $pc );
+	$content = do_shortcode( $content );
+	return "<h2 id='albumgal-{$gal->ID}'>{$gal->post_title}</h2>{$back}". $content;
 }
 
 
