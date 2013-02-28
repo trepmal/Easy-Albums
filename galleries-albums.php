@@ -100,7 +100,7 @@ class Galleries_and_Albums {
 
 				echo '<p class="description">You can drag the names to change their order.</p>';
 
-				$savedgalleries = get_post_meta( $post->ID, 'galleries', true );
+				$savedgalleries = (array) get_post_meta( $post->ID, 'galleries', true );
 
 				$args = array(
 					'post_type' => 'gallery',
@@ -127,7 +127,9 @@ class Galleries_and_Albums {
 				echo '<input type="hidden" name="galleries[]" value="0" /><ul id="gallery-cbs">';
 				foreach( $allgalleries as $gallery ) {
 					$s = in_array( $gallery->ID, $savedgalleries ) ? " checked='checked'" : '';
-					echo "<li><label><input type='checkbox' name='galleries[]' value='{$gallery->ID}'$s /> {$gallery->post_title}</label></li>";
+					$title = get_the_title( $gallery->ID );
+					if ( empty( $title ) ) $title = '<em>no title</em>';
+					echo "<li><label><input type='checkbox' name='galleries[]' value='{$gallery->ID}'$s /> {$title}</label></li>";
 				}
 				echo '</ul>';
 
@@ -246,7 +248,7 @@ class Galleries_and_Albums {
 			$album_post = get_post( $id );
 		}
 
-		$galleries = get_post_meta( $id, 'galleries', true );
+		$galleries = (array) get_post_meta( $id, 'galleries', true );
 		//if requesting a sub-gallery
 		if ( isset( $_GET['showgallery'] ) ) {
 			//and sub-gallery is in this set (in case of multiple albums per page)
