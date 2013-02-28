@@ -6,9 +6,13 @@ Version: 2013.02.28
 Author: Kailey Lampert
 Author URI: kaileylampert.com
 */
+if ( ! defined('ABSPATH') )
+	die('-1');
 
 // replacement [gallery] shortcode. Does everything core does, plus a little more
 require plugin_dir_path(__FILE__) . 'shortcode.php';
+
+require plugin_dir_path(__FILE__) . 'widgets.php';
 
 require plugin_dir_path(__FILE__) . 'mce-integration.php';
 
@@ -19,6 +23,10 @@ require plugin_dir_path(__FILE__) . 'mce-integration.php';
 $galleries_and_albums = new Galleries_and_Albums();
 
 class Galleries_and_Albums {
+
+	/**
+	 * 
+	 */
 	function __construct() {
 
 		add_action( 'init', array( &$this, 'init_register_cpt' ) );
@@ -38,6 +46,9 @@ class Galleries_and_Albums {
 		add_shortcode( 'album', array( &$this, 'sc_album' ) );
 	}
 
+	/**
+	 * Register our 2 custom post types
+	 */
 	function init_register_cpt() {
 
 		$labels = array(
@@ -92,12 +103,19 @@ class Galleries_and_Albums {
 		register_post_type( 'album', $args );
 	}
 
+		/**
+		 * Prepare meta boxes for the Albums CPT
+		 */
 		function register_album_meta_box( $post ) {
 			wp_enqueue_script('jquery-ui-sortable');
 			add_meta_box( 'gallerypicker', 'Galleries', array( &$this, 'the_album_box' ), $post->post_type, 'normal' );
 			add_meta_box( 'albumpreview', 'Preview', array( &$this, 'the_album_preview_box' ), $post->post_type, 'normal' );
 		}
 
+			/**
+			 * Fill in "Galleries" metabox for Albums CPT
+			 * Creates a checklist of available galleries
+			 */
 			function the_album_box( $post ) {
 
 				echo '<p class="description">You can drag the names to change their order.</p>';
@@ -138,15 +156,24 @@ class Galleries_and_Albums {
 				add_action('admin_print_footer_scripts', array( &$this, 'admin_footer' ) );
 
 			}
+				/**
+				 * Make our gallery checkboxes sortable
+				 */
 				function admin_footer() {
 					?><script>jQuery('#gallery-cbs').sortable(); jQuery('#gallery-cbs li').css('cursor', 'move');</script><?php
 				}
 
+			/**
+			 * Fill in "Preview" metabox for Albums CPT
+			 */
 			function the_album_preview_box( $post ) {
 				echo '<p class="description">Preview updates on save. Links disabled.</em></p>';
 				echo do_shortcode( "[album id='{$post->ID}' nolinks=1]" );
 			}
 
+	/**
+	 * Add new columns for Galleries CPT
+	 */
 	function manage_gallery_posts_columns( $columns ) {
 		unset( $columns['date'] );
 		$columns['gallerythumb'] = 'Thumbnail';
@@ -155,11 +182,17 @@ class Galleries_and_Albums {
 		return $columns;
 	}
 
+	/**
+	 * Fill in columns for Galleries CPT
+	 */
 	function manage_gallery_posts_custom_column( $column, $post_id ) {
 		if ( $column == 'gallerythumb' )
 			echo wp_get_attachment_image( $this->get_gallery_thumbnail_id( $post_id ), array( 50, 50 ) );
 	}
 
+	/**
+	 * Add new columns for Albums CPT
+	 */
 	function manage_album_posts_columns( $columns ) {
 		unset( $columns['date'] );
 		$columns['albumpreview'] = 'Preview';
@@ -168,11 +201,17 @@ class Galleries_and_Albums {
 		return $columns;
 	}
 
+	/**
+	 * Fill in columns for Albums CPT
+	 */
 	function manage_album_posts_custom_column( $column, $post_id ) {
 		if ( $column == 'albumpreview' )
 			echo do_shortcode( "[album id='{$post_id}' nolinks=1 imgh=50 imgw=50 columns=5]" );
 	}
 
+	/**
+	 * Show [album] shortcode on Albums CPT
+	 */
 	function album_edit_form_after_title() {
 		if ( 'album' != get_post_type() ) return;
 		global $post;
@@ -180,17 +219,27 @@ class Galleries_and_Albums {
 		echo "<p>Embed this album in a post or page by using: <code>[album name='{$post->post_name}']</code></p>";
 	}
 
+	/**
+	 * Show additional info for Galleries CPT
+	 */
 	function gallery_edit_form_after_editor() {
 		if ( 'gallery' != get_post_type() ) return;
 		echo '<p>You can include just about any content in these galleries, but it works best with a gallery shortcode. <span class="description">e.g. <code>[gallery ids="123,456"]</code></span></p>';
 	}
 
+	/**
+	 * In Albums CPT, selected galleries are saved in post meta
+	 * Hide our meta in case the custom fields box is shown
+	 */
 	function is_protected_meta( $protected, $meta_key, $meta_type ) {
 		if ( 'album' != get_post_type() ) return $protected;
 		if ( 'galleries' == $meta_key ) return true;
 		return $protected;
 	}
 
+	/**
+	 * Save our selected galleries for Album CPT
+	 */
 	function save_box( $post_id, $post ) {
 
 		if ( ! isset( $_POST['galleries'] ) ) //make sure our custom value is being sent
@@ -225,6 +274,9 @@ class Galleries_and_Albums {
 
 	}
 
+	/**
+	 * The [album] shortcode
+	 */
 	function sc_album( $atts, $content ) {
 		extract( shortcode_atts( array(
 			'name' => false,
@@ -240,6 +292,8 @@ class Galleries_and_Albums {
 			//pass params on to sub-galleries for consistency
 			$att_string .= " $k='$v'";
 		}
+
+		// bail if no name or id provided
 		if ( !$id && !$name ) return;
 
 		if ( ! $id ) {
@@ -274,6 +328,10 @@ class Galleries_and_Albums {
 		return $html;
 	} // end sc_album()
 
+	/**
+	 * Get a galleries thumbnail
+	 * Either featured image, first in [gallery] shortcode, or first inserted image
+	 */
 	function get_gallery_thumbnail_id( $gallery_id ) {
 		if ( has_post_thumbnail( $gallery_id ) ) {
 			// get post thumb if available
@@ -300,167 +358,24 @@ class Galleries_and_Albums {
 
 } //end class
 
+/**
+ * Get a gallery based on ID
+ * 
+ * @param string $back Link back to main album
+ * @param int $gal_id ID of gallery to fetch
+ * @param string $att_string Attributes inherited from [album] shortcode 
+ */
 function get_sub_gallery( $back, $gal_id, $att_string ) {
 	$back = "<p><a class='backtoalbum' href='$back'>&larr; Back</a></p>";
 	$gal = get_post( $gal_id );
 
 	// insert inheritable shortcode attributes
-	$pc = $gal->post_content;
-	$content = preg_replace( '/\[gallery([^[]*)\]/', '[gallery$1'.$att_string.']', $pc );
+	$content = preg_replace( '/\[gallery([^[]*)\]/', '[gallery$1'.$att_string.']', $gal->post_content );
+
 	$content = do_shortcode( $content );
 	return "<h2 id='albumgal-{$gal->ID}'>{$gal->post_title}</h2>{$back}". $content;
 }
 
-
-
-add_action( 'widgets_init', 'register_galleries_widget' );
-function register_galleries_widget() {
-	register_widget( 'Galleries_Widget' );
-}
-class Galleries_Widget extends WP_Widget {
-
-	function __construct() {
-		$widget_ops = array('classname' => 'galleries-widget', 'description' => __( 'Display Galleries' ) );
-		$control_ops = array( );
-		parent::WP_Widget( 'gallerieswidget', __( 'Display Gallery' ), $widget_ops, $control_ops );
-	}
-
-	function widget( $args, $instance ) {
-
-		extract( $args, EXTR_SKIP );
-		echo $before_widget;
-
-		echo $instance['hide_title'] ? '' : $before_title . $instance['title'] . $after_title;
-
-		echo do_shortcode( get_post( $instance['gallery'] )->post_content );
-
-		echo $after_widget;
-
-	} //end widget()
-
-	function update($new_instance, $old_instance) {
-
-		$instance = $old_instance;
-		$instance['hide_title'] = (bool) $new_instance['hide_title'] ? 1 : 0;
-		$instance['gallery'] = intval( $new_instance['gallery'] );
-		$instance['title'] = get_the_title( $instance['gallery'] );
-		return $instance;
-
-	} //end update()
-
-	function form( $instance ) {
-		$instance = wp_parse_args( (array) $instance, array( 'title' => 'Gallery', 'hide_title' => 0, 'gallery' => 0 ) );
-		extract( $instance );
-		?>
-		<input id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="hidden" value="<?php echo $title; ?>" />
-
-		<p>
-			<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('hide_title'); ?>" name="<?php echo $this->get_field_name('hide_title'); ?>"<?php checked( $hide_title ); ?> />
-			<label for="<?php echo $this->get_field_id('hide_title'); ?>"><?php _e('Hide Title?' );?></label>
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'gallery' ); ?>"><?php _e( 'Gallery:' );?>
-				<select id="<?php echo $this->get_field_id('gallery'); ?>" name="<?php echo $this->get_field_name('gallery'); ?>">
-				<?php
-				$allgalleries = get_posts( 'post_type=gallery&numberposts=-1' );
-				foreach( $allgalleries as $g ) {
-					$s = selected( $g->ID, $gallery, false );
-					echo "<option value='{$g->ID}'$s>{$g->post_title}</option>";
-				}
-				?>
-				</select>
-			</label>
-		</p>
-		<?php
-
-		// fell down a rabbit hole. might come back to this later.
-		// http://core.trac.wordpress.org/ticket/23591
-		/* wp_editor( '', 'ed_'.$this->id, array(
-			'tinymce' => false,
-			'quicktags' => false,
-			'textarea_rows' => 1,
-		) );
-		?><script type="text/javascript">
-jQuery(function($) {
-	$(document.body).on( 'click', '.insert-media', function( event ) {
-		wpActiveEditor = $(this).data('editor');
-	});
-});
-</script><?php */
-
-	} //end form()
-}
-
-add_action( 'widgets_init', 'register_albums_widget' );
-function register_albums_widget() {
-	register_widget( 'Albums_Widget' );
-}
-class Albums_Widget extends WP_Widget {
-
-	function __construct() {
-		$widget_ops = array('classname' => 'albums-widget', 'description' => __( 'Display Albums' ) );
-		$control_ops = array( );
-		parent::WP_Widget( 'albumswidget', __( 'Display Album' ), $widget_ops, $control_ops );
-	}
-
-	function widget( $args, $instance ) {
-
-		extract( $args, EXTR_SKIP );
-		echo $before_widget;
-
-		echo $instance['hide_title'] ? '' : $before_title . $instance['title'] . $after_title;
-
-		echo do_shortcode( '[album id='.$instance['album'].' columns='.$instance['columns'].']' );
-
-		echo $after_widget;
-
-	} //end widget()
-
-	function update($new_instance, $old_instance) {
-
-		$instance = $old_instance;
-		$instance['hide_title'] = (bool) $new_instance['hide_title'] ? 1 : 0;
-		$instance['album'] = intval( $new_instance['album'] );
-		$instance['title'] = get_the_title( $instance['album'] );
-		$instance['columns'] = intval( $new_instance['columns'] );
-		return $instance;
-
-	} //end update()
-
-	function form( $instance ) {
-		$instance = wp_parse_args( (array) $instance, array( 'title' => 'Album', 'hide_title' => 0, 'album' => 0, 'columns' => 3 ) );
-		extract( $instance );
-		?>
-		<input id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="hidden" value="<?php echo $title; ?>" />
-
-		<p>
-			<input type="checkbox" class="checkbox" id="<?php echo $this->get_field_id('hide_title'); ?>" name="<?php echo $this->get_field_name('hide_title'); ?>"<?php checked( $hide_title ); ?> />
-			<label for="<?php echo $this->get_field_id('hide_title'); ?>"><?php _e('Hide Title?' );?></label>
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'album' ); ?>"><?php _e( 'Album:' );?>
-				<select id="<?php echo $this->get_field_id('album'); ?>" name="<?php echo $this->get_field_name('album'); ?>">
-				<?php
-				$allalbums = get_posts( 'post_type=album&numberposts=-1' );
-				foreach( $allalbums as $a ) {
-					$s = selected( $a->ID, $album, false );
-					$title = get_the_title( $a->ID );
-					if ( empty( $title ) ) $title = 'no title';
-					echo "<option value='{$a->ID}'>{$title}</option>";
-				}
-				?>
-				</select>
-			</label>
-		</p>
-		<p>
-			<label for="<?php echo $this->get_field_id( 'columns' ); ?>"><?php _e( 'Columns:' );?>
-				<input type="text" id="<?php echo $this->get_field_id('columns'); ?>" name="<?php echo $this->get_field_name('columns'); ?>" value="<?php echo $columns; ?>" />
-			</label>
-		</p>
-		<?php
-
-	} //end form()
-}
 
 if ( ! function_exists( 'maybe_create_missing_intermediate_images') ) {
 /*
