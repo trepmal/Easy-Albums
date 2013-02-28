@@ -101,3 +101,5 @@ class Albums_MCE_Button {
 	}
 
 }
+
+//eof

@@ -244,13 +244,14 @@ class Galleries_and_Albums {
 
 		if ( ! $id ) {
 			$name = strtolower( $name );
-			$album_post = array_shift( get_posts( "name=$name&post_type=album") );
+			$album_post = array_shift( get_posts( "name={$name}&post_type=album") );
 			$id = $album_post->ID;
 		} else {
 			$album_post = get_post( $id );
 		}
 
 		$galleries = (array) get_post_meta( $id, 'galleries', true );
+
 		//if requesting a sub-gallery
 		if ( isset( $_GET['showgallery'] ) ) {
 			//and sub-gallery is in this set (in case of multiple albums per page)
@@ -258,9 +259,11 @@ class Galleries_and_Albums {
 
 				$back = remove_query_arg( 'showgallery' );
 
-				return $this->get_sub_gallery( $back, $_GET['showgallery'], $att_string );
+				return get_sub_gallery( $back, $_GET['showgallery'], $att_string );
 			}
 		}
+
+		// otherwise...
 
 		// get the feat or first image in each gallery for use as a gallery thumb
 		$gallery_thumbs = array_map( array( &$this, 'get_gallery_thumbnail_id'), $galleries );
@@ -295,13 +298,14 @@ class Galleries_and_Albums {
 	}
 
 
-	function get_sub_gallery( $back, $gal_id, $att_string ) {
-		$back = "<p><a class='backtoalbum' href='$back'>&larr; Back</a></p>";
-		$gal = get_post( $gal_id );
-		return "<h2 id='albumgal-{$gal->ID}'>{$gal->post_title}</h2>{$back}". do_shortcode( str_replace(']', $att_string.']', $gal->post_content ) );
-	}
-
 } //end class
+
+function get_sub_gallery( $back, $gal_id, $att_string ) {
+	$back = "<p><a class='backtoalbum' href='$back'>&larr; Back</a></p>";
+	$gal = get_post( $gal_id );
+	return "<h2 id='albumgal-{$gal->ID}'>{$gal->post_title}</h2>{$back}". do_shortcode( str_replace(']', $att_string.']', $gal->post_content ) );
+}
+
 
 
 add_action( 'widgets_init', 'register_galleries_widget' );

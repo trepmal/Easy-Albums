@@ -18,7 +18,8 @@ class Galleries_Albums_Ajax_Layer {
 
 	function wp_footer() {
 		?><script>
-		var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
+		var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>',
+			loading = '<?php echo admin_url('images/loading.gif'); ?>';
 
 		function getUrlVars(str) {
 			var vars = {};
@@ -37,9 +38,13 @@ class Galleries_Albums_Ajax_Layer {
 				thisalb = thisimg.closest('.album'),
 				atts = thisalb.prev('.att_string').val();
 
+
 			history.pushState({}, '', thisimg.attr('href') );
 
-			albumhtml = thisalb;
+			// basically, get outerHtml
+			albumhtml = thisalb.clone().wrap('<div>').parent().html();
+
+			thisalb.html( '<img src="'+ loading +'" />' );
 
 			qvars = getUrlVars( jQuery(this).attr('href') );
 
@@ -70,7 +75,7 @@ class Galleries_Albums_Ajax_Layer {
 
 	function get_gallery_cb() {
 		$gallery_id = intval( $_POST['gallery_id'] );
-		$att_string = stripslashes( $_POST['att_string'] );
+		$att_string = isset( $_POST['att_string'] ) ? stripslashes( $_POST['att_string'] ) : '';
 		global $post;
 		$post = get_post( $gallery_id ); //need the $post global for the shortcode...
 
@@ -79,3 +84,5 @@ class Galleries_Albums_Ajax_Layer {
 	}
 
 }
+
+//eof

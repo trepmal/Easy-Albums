@@ -210,4 +210,5 @@ function gallery_shortcode_plus($attr) {
 
 	return $output;
 }
+
 //eof
