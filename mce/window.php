@@ -6,7 +6,7 @@ if ( ! defined('ABSPATH') )
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>Video URL</title>
+	<title>Select Album</title>
 	<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
 	<script language="javascript" type="text/javascript" src="<?php echo includes_url('js/tinymce/tiny_mce_popup.js'); ?>"></script>
 	<base target="_self" />
@@ -19,7 +19,7 @@ function insertLink(evt) {
 	//get the form values
 	var album_id = document.getElementById('albums').value;
 
-	//double-check that our video id is set and setup shortcode
+	//double-check that our album id is set and setup shortcode
 	if (album_id != 0 )
 		tagtext = '[album id='+ album_id +']';
 	else
@@ -53,7 +53,6 @@ function insertLink(evt) {
 				<?php
 				$allalbums = get_posts( 'post_type=album&numberposts=-1' );
 				foreach( $allalbums as $a ) {
-					// $s = selected( $g->ID, $gallery, false );
 					$title = get_the_title( $a->ID );
 					if ( empty( $title ) ) $title = 'no title';
 					echo "<option value='{$a->ID}'>{$title}</option>";
