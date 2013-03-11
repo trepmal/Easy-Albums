@@ -55,7 +55,7 @@ class Galleries_Widget extends WP_Widget {
 			<label for="<?php echo $this->get_field_id( 'gallery' ); ?>"><?php _e( 'Gallery:' );?>
 				<select id="<?php echo $this->get_field_id('gallery'); ?>" name="<?php echo $this->get_field_name('gallery'); ?>">
 				<?php
-				$allgalleries = get_posts( 'post_type=gallery&numberposts=-1' );
+				$allgalleries = get_posts( 'post_type=easy_gallery&numberposts=-1' );
 				foreach( $allgalleries as $g ) {
 					$s = selected( $g->ID, $gallery, false );
 					echo "<option value='{$g->ID}'$s>{$g->post_title}</option>";
@@ -130,7 +130,7 @@ class Albums_Widget extends WP_Widget {
 			<label for="<?php echo $this->get_field_id( 'album' ); ?>"><?php _e( 'Album:' );?>
 				<select id="<?php echo $this->get_field_id('album'); ?>" name="<?php echo $this->get_field_name('album'); ?>">
 				<?php
-				$allalbums = get_posts( 'post_type=album&numberposts=-1' );
+				$allalbums = get_posts( 'post_type=easy_album&numberposts=-1' );
 				foreach( $allalbums as $a ) {
 					$s = selected( $a->ID, $album, false );
 					$title = get_the_title( $a->ID );

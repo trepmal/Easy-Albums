@@ -51,7 +51,7 @@ function insertLink(evt) {
 			<tr>
 				<td>
 				<?php
-				$allalbums = get_posts( 'post_type=album&numberposts=-1' );
+				$allalbums = get_posts( 'post_type=easy_album&numberposts=-1' );
 				if ( ! empty( $allalbums ) ) {
 					echo '<select id="albums" name="albums">';
 

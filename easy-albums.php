@@ -23,18 +23,20 @@ require plugin_dir_path(__FILE__) . 'mce-integration.php';
 $galleries_and_albums = new Galleries_and_Albums();
 
 class Galleries_and_Albums {
-
+	var $gallery_cpt = 'easy_gallery';
+	var $album_cpt = 'easy_album';
 	/**
 	 * 
 	 */
 	function __construct() {
 
 		add_action( 'init', array( &$this, 'init_register_cpt' ) );
+		add_action( 'admin_head', array( &$this, 'cpt_icons' ) );
 
-		add_filter( 'manage_gallery_posts_columns', array( &$this, 'manage_gallery_posts_columns' ) );
-		add_action( 'manage_gallery_posts_custom_column', array( &$this, 'manage_gallery_posts_custom_column' ), 10, 2 );
-		add_filter( 'manage_album_posts_columns', array( &$this, 'manage_album_posts_columns' ) );
-		add_action( 'manage_album_posts_custom_column', array( &$this, 'manage_album_posts_custom_column' ), 10, 2 );
+		add_filter( 'manage_'. $this->gallery_cpt .'_posts_columns', array( &$this, 'manage_gallery_posts_columns' ) );
+		add_action( 'manage_'. $this->gallery_cpt .'_posts_custom_column', array( &$this, 'manage_gallery_posts_custom_column' ), 10, 2 );
+		add_filter( 'manage_'. $this->album_cpt .'_posts_columns', array( &$this, 'manage_album_posts_columns' ) );
+		add_action( 'manage_'. $this->album_cpt .'_posts_custom_column', array( &$this, 'manage_album_posts_custom_column' ), 10, 2 );
 
 		add_action( 'edit_form_after_title', array( &$this, 'album_edit_form_after_title' ) );
 		add_action( 'edit_form_after_editor', array( &$this, 'gallery_edit_form_after_editor' ) );
@@ -74,7 +76,7 @@ class Galleries_and_Albums {
 			'query_var' => false,
 			'supports' => array( 'title', 'editor', 'thumbnail' )
 		);
-		register_post_type( 'gallery', $args );
+		register_post_type( $this->gallery_cpt, $args );
 
 		$labels = array(
 			'name' => 'Albums',
@@ -95,12 +97,14 @@ class Galleries_and_Albums {
 			'labels' => $labels,
 			'public' => false,
 			'show_ui' => true,
+			'show_in_nav_menu' => false,
+			'show_in_menu' => 'edit.php?post_type='. $this->gallery_cpt,
 			'rewrite' => false,
 			'query_var' => false,
 			'supports' => array( 'title' ),
 			'register_meta_box_cb' => array( &$this, 'register_album_meta_box' )
 		);
-		register_post_type( 'album', $args );
+		register_post_type( $this->album_cpt, $args );
 	}
 
 		/**
@@ -123,7 +127,7 @@ class Galleries_and_Albums {
 				$savedgalleries = (array) get_post_meta( $post->ID, 'galleries', true );
 
 				$args = array(
-					'post_type' => 'gallery',
+					'post_type' => $this->gallery_cpt,
 					'orderby' => 'post__in',
 					'numberposts' => -1,
 				);
@@ -171,6 +175,17 @@ class Galleries_and_Albums {
 				echo do_shortcode( "[album id='{$post->ID}' nolinks=1]" );
 			}
 
+	function cpt_icons() {
+		?><style type="text/css">
+		#adminmenu #menu-posts-<?php echo $this->gallery_cpt; ?> div.wp-menu-image{
+			background: transparent url(<?php echo plugins_url( 'pictures-stack.png', __FILE__ ); ?>) no-repeat 6px -17px;
+		}
+		#adminmenu #menu-posts-<?php echo $this->gallery_cpt; ?>:hover div.wp-menu-image,
+		#adminmenu #menu-posts-<?php echo $this->gallery_cpt; ?>.wp-has-current-submenu div.wp-menu-image {
+			background-position: 6px 7px;
+		}
+		</style><?php
+	}
 	/**
 	 * Add new columns for Galleries CPT
 	 */
@@ -213,7 +228,7 @@ class Galleries_and_Albums {
 	 * Show [album] shortcode on Albums CPT
 	 */
 	function album_edit_form_after_title() {
-		if ( 'album' != get_post_type() ) return;
+		if ( $this->album_cpt != get_post_type() ) return;
 		global $post;
 		if ( empty( $post->post_name ) ) return;
 		echo "<p>Embed this album in a post or page by using: <code>[album name='{$post->post_name}']</code></p>";
@@ -223,7 +238,7 @@ class Galleries_and_Albums {
 	 * Show additional info for Galleries CPT
 	 */
 	function gallery_edit_form_after_editor() {
-		if ( 'gallery' != get_post_type() ) return;
+		if ( $this->gallery_cpt != get_post_type() ) return;
 		echo '<p>You can include just about any content in these galleries, but it works best with a gallery shortcode. <span class="description">e.g. <code>[gallery ids="123,456"]</code></span></p>';
 	}
 
@@ -232,7 +247,7 @@ class Galleries_and_Albums {
 	 * Hide our meta in case the custom fields box is shown
 	 */
 	function is_protected_meta( $protected, $meta_key, $meta_type ) {
-		if ( 'album' != get_post_type() ) return $protected;
+		if ( $this->album_cpt != get_post_type() ) return $protected;
 		if ( 'galleries' == $meta_key ) return true;
 		return $protected;
 	}
@@ -298,7 +313,7 @@ class Galleries_and_Albums {
 
 		if ( ! $id ) {
 			$name = strtolower( $name );
-			$album_post = array_shift( get_posts( "name={$name}&post_type=album") );
+			$album_post = array_shift( get_posts( "name={$name}&post_type={$this->album_cpt}") );
 			$id = $album_post->ID;
 		} else {
 			$album_post = get_post( $id );
