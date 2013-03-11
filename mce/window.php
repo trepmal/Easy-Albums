@@ -49,16 +49,24 @@ function insertLink(evt) {
 		<div class="panel_wrapper">
 		<table border="0" cellpadding="4" cellspacing="0">
 			<tr>
-				<td><select id="albums" name="albums">
+				<td>
 				<?php
 				$allalbums = get_posts( 'post_type=album&numberposts=-1' );
-				foreach( $allalbums as $a ) {
-					$title = get_the_title( $a->ID );
-					if ( empty( $title ) ) $title = 'no title';
-					echo "<option value='{$a->ID}'>{$title}</option>";
+				if ( ! empty( $allalbums ) ) {
+					echo '<select id="albums" name="albums">';
+
+					foreach( $allalbums as $a ) {
+						$title = get_the_title( $a->ID );
+						if ( empty( $title ) ) $title = 'no title';
+						echo "<option value='{$a->ID}'>{$title}</option>";
+					}
+
+					echo '</select>';
+				} else {
+					echo '<p>You haven\'t created any albums yet</p>';
 				}
 				?>
-				</select></td>
+				</td>
 			</tr>
 		</table>
 
