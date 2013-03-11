@@ -28,7 +28,7 @@
 			});
 
 			ed.addButton('albums', {
-				title : 'albums.desc',
+				title : 'Insert Album',
 				cmd : 'mcealbums',
 				image : url + '/icon.gif'
 			});
