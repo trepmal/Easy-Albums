@@ -16,9 +16,6 @@ class Albums_MCE_Button {
 	 */
 	function __construct()  {
 
-		// Modify the version when tinyMCE plugins are changed.
-		add_filter('tiny_mce_version', array( &$this, 'tiny_mce_version') );
-
 		// init process for button control
 		add_action('init', array( &$this, 'init') );
 
@@ -71,17 +68,6 @@ class Albums_MCE_Button {
 		$plugin_array[ $this->pluginname ] =  plugins_url( 'mce/editor_plugin.js', __FILE__ );
 
 		return $plugin_array;
-	}
-
-	/**
-	 * ::tiny_mce_version()
-	 * A different version will rebuild the cache
-	 *
-	 * @return $version
-	 */
-	function tiny_mce_version( $version ) {
-		$version = $version + $this->internalVersion;
-		return $version;
 	}
 
 	/**
