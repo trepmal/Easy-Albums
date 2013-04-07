@@ -7,7 +7,7 @@ new Galleries_Albums_Ajax_Layer();
 /** Known issues
  * with history.pushState, you can be in a sub-gallery, refresh the page, and remain in the sub-gallery
  * however, on page refresh, the original albumhtml is lost, rendering the back link useless
- * 
+ *
  */
 
 class Galleries_Albums_Ajax_Layer {

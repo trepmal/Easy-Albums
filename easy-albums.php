@@ -26,7 +26,7 @@ class Galleries_and_Albums {
 	var $gallery_cpt = 'easy_gallery';
 	var $album_cpt = 'easy_album';
 	/**
-	 * 
+	 *
 	 */
 	function __construct() {
 
@@ -64,7 +64,7 @@ class Galleries_and_Albums {
 			'view_item' => 'View Gallery',
 			'search_items' => 'Search Galleries',
 			'not_found' =>  'No galleries found',
-			'not_found_in_trash' => 'No galleries found in Trash', 
+			'not_found_in_trash' => 'No galleries found in Trash',
 			'parent_item_colon' => '',
 			'menu_name' => 'Galleries'
 		);
@@ -89,7 +89,7 @@ class Galleries_and_Albums {
 			'view_item' => 'View Album',
 			'search_items' => 'Search Albums',
 			'not_found' =>  'No albums found',
-			'not_found_in_trash' => 'No albums found in Trash', 
+			'not_found_in_trash' => 'No albums found in Trash',
 			'parent_item_colon' => '',
 			'menu_name' => 'Albums'
 		);
@@ -268,7 +268,7 @@ class Galleries_and_Albums {
 
 		// make sure they're ints
 		$galleries = array_map( 'intval', $_POST['galleries'] ); //sanitize
-		
+
 		// unset the placeholder
 		if ( $galleries[0] === 0 )
 			unset( $galleries[0] );
@@ -378,7 +378,7 @@ class Galleries_and_Albums {
  * 
  * @param string $back Link back to main album
  * @param int $gal_id ID of gallery to fetch
- * @param string $att_string Attributes inherited from [album] shortcode 
+ * @param string $att_string Attributes inherited from [album] shortcode
  */
 function get_sub_gallery( $back, $gal_id, $att_string ) {
 	$back = "<p><a class='backtoalbum' href='$back'>&larr; Back</a></p>";
