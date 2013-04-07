@@ -18,6 +18,7 @@ require plugin_dir_path(__FILE__) . 'mce-integration.php';
 
 // optional
 // require plugin_dir_path(__FILE__) . 'ajax-layer.php';
+require plugin_dir_path(__FILE__) . 'permalinks.php';
 
 
 $galleries_and_albums = new Galleries_and_Albums();
@@ -327,6 +328,7 @@ class Galleries_and_Albums {
 			if ( in_array($_GET['showgallery'], $galleries ) ) {
 
 				$back = remove_query_arg( 'showgallery' );
+				$back = get_permalink();
 
 				return get_sub_gallery( $back, $_GET['showgallery'], $att_string );
 			}
@@ -337,7 +339,7 @@ class Galleries_and_Albums {
 		// get the feat or first image in each gallery for use as a gallery thumb
 		$gallery_thumbs = array_map( array( &$this, 'get_gallery_thumbnail_id'), $galleries );
 
-		$sc = '[gallery album="1" ids="'. implode( ',', $gallery_thumbs ).'" gals="'. implode( ',', $galleries ).'"'. $att_string .']';
+		$sc = '[gallery album="'. $id .'" ids="'. implode( ',', $gallery_thumbs ).'" gals="'. implode( ',', $galleries ).'"'. $att_string .']';
 		$html = "<input type='hidden' class='att_string' value=\"$att_string\" />" .do_shortcode( $sc );
 
 		return $html;

@@ -176,6 +176,11 @@ function gallery_shortcode_plus($attr) {
 			$url = add_query_arg( array(
 					'showgallery' =>  $pairs[$id],
 					) ). "#albumgal-{$pairs[$id]}";
+			if ( class_exists('Galleries_and_Albums_Permalinks') ) {
+				$url = add_query_arg(array());
+				$name = get_post( $pairs[ $id ] )->post_name;
+				$url .= "album/$album/$name/#albumgal-{$pairs[$id]}";
+			}
 			$link = str_replace( wp_get_attachment_url( $id ), $url, $link );
 		}
 
