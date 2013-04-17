@@ -408,6 +408,9 @@ function get_sub_gallery( $back, $gal_id, $att_string ) {
 	// insert inheritable shortcode attributes
 	$content = preg_replace( '/\[gallery([^[]*)\]/', '[gallery$1'.$att_string.']', $gal->post_content );
 
+	// apply_filters( 'the_content' ) can have unwanted side-effects (sharing buttons, etc.)
+	$content = wpautop( $content );
+	$content = shortcode_unautop( $content );
 	$content = do_shortcode( $content );
 	return "<h2 id='albumgal-{$gal->ID}'>{$gal->post_title}</h2>{$back}". $content;
 }
