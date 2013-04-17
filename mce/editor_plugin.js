@@ -28,7 +28,8 @@
 			});
 
 			ed.addButton('albums', {
-				title : 'Insert Album',
+				//title : 'Insert Album',
+				title: ed.getLang( 'easyalbums.insertalbum' ),
 				cmd : 'mcealbums',
 				image : url + '/icon.gif'
 			});
@@ -46,7 +47,7 @@
 
 		_do_gallery : function(co) {
 			return co.replace(/\[album([^\]]*)\]/g, function(a,b){
-				return '<img src="'+tinymce.baseURL+'/plugins/wpgallery/img/t.gif" style="border: 1px dashed #888;background: #f2f8ff no-repeat scroll center center;width: 99%;height: 250px" class="wpAlbum mceItem" title="album'+tinymce.DOM.encode(b)+'" />';
+				return '<img src="'+tinymce.baseURL+'/plugins/wpgallery/img/t.gif" style="border: 1px dashed #888;background: #f2fff8 no-repeat scroll center center;width: 99%;height: 250px" class="wpAlbum mceItem" title="album'+tinymce.DOM.encode(b)+'" />';
 			});
 		},
 

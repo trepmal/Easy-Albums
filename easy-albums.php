@@ -1,11 +1,17 @@
 <?php
 /*
-Plugin Name: Easy Albums
-Description: Put a group of galleries into an album, then put the album in a page.
-Version: 2013.02.28
-Author: Kailey Lampert
-Author URI: kaileylampert.com
-*/
+ * Plugin Name: Easy Albums
+ * Plugin URI: trepmal.com
+ * Description: Put a group of galleries into an album, then put the album in a page.
+ * Version: 2013.04.17
+ * Author: Kailey Lampert
+ * Author URI: kaileylampert.com
+ * License: GPLv2 or later
+ * TextDomain: easy-albums
+ * DomainPath: lang/
+ * Network:
+ */
+
 if ( ! defined('ABSPATH') )
 	die('-1');
 
@@ -18,7 +24,10 @@ require plugin_dir_path(__FILE__) . 'mce-integration.php';
 
 // optional
 // require plugin_dir_path(__FILE__) . 'ajax-layer.php';
-require plugin_dir_path(__FILE__) . 'permalinks.php';
+
+// optional
+if ( '' != get_option( 'permalink_structure', '' ) )
+	require plugin_dir_path(__FILE__) . 'permalinks.php';
 
 
 $galleries_and_albums = new Galleries_and_Albums();
@@ -55,19 +64,19 @@ class Galleries_and_Albums {
 	function init_register_cpt() {
 
 		$labels = array(
-			'name' => 'Galleries',
-			'singular_name' => 'Gallery',
-			'add_new' => 'Add Gallery',
-			'add_new_item' => 'Add New Gallery',
-			'edit_item' => 'Edit Gallery',
-			'new_item' => 'New Gallery',
-			'all_items' => 'All Galleries',
-			'view_item' => 'View Gallery',
-			'search_items' => 'Search Galleries',
-			'not_found' =>  'No galleries found',
-			'not_found_in_trash' => 'No galleries found in Trash',
-			'parent_item_colon' => '',
-			'menu_name' => 'Galleries'
+			'name' => __( 'Galleries', 'easy-albums' ),
+			'singular_name' => __( 'Gallery', 'easy-albums' ),
+			'add_new' => __( 'Add Gallery', 'easy-albums' ),
+			'add_new_item' => __( 'Add New Gallery', 'easy-albums' ),
+			'edit_item' => __( 'Edit Gallery', 'easy-albums' ),
+			'new_item' => __( 'New Gallery', 'easy-albums' ),
+			'all_items' => __( 'All Galleries', 'easy-albums' ),
+			'view_item' => __( 'View Gallery', 'easy-albums' ),
+			'search_items' => __( 'Search Galleries', 'easy-albums' ),
+			'not_found' => __( 'No galleries found', 'easy-albums' ),
+			'not_found_in_trash' => __( 'No galleries found in Trash', 'easy-albums' ),
+			'parent_item_colon' => __( '', 'easy-albums' ),
+			'menu_name' => __( 'Galleries', 'easy-albums' )
 		);
 		$args = array(
 			'labels' => $labels,
@@ -80,19 +89,19 @@ class Galleries_and_Albums {
 		register_post_type( $this->gallery_cpt, $args );
 
 		$labels = array(
-			'name' => 'Albums',
-			'singular_name' => 'Album',
-			'add_new' => 'Add Album',
-			'add_new_item' => 'Add New Album',
-			'edit_item' => 'Edit Album',
-			'new_item' => 'New Album',
-			'all_items' => 'All Albums',
-			'view_item' => 'View Album',
-			'search_items' => 'Search Albums',
-			'not_found' =>  'No albums found',
-			'not_found_in_trash' => 'No albums found in Trash',
-			'parent_item_colon' => '',
-			'menu_name' => 'Albums'
+			'name' => __( 'Albums', 'easy-albums' ),
+			'singular_name' => __( 'Album', 'easy-albums' ),
+			'add_new' => __( 'Add Album', 'easy-albums' ),
+			'add_new_item' => __( 'Add New Album', 'easy-albums' ),
+			'edit_item' => __( 'Edit Album', 'easy-albums' ),
+			'new_item' => __( 'New Album', 'easy-albums' ),
+			'all_items' => __( 'All Albums', 'easy-albums' ),
+			'view_item' => __( 'View Album', 'easy-albums' ),
+			'search_items' => __( 'Search Albums', 'easy-albums' ),
+			'not_found' => __( 'No albums found', 'easy-albums' ),
+			'not_found_in_trash' => __( 'No albums found in Trash', 'easy-albums' ),
+			'parent_item_colon' => __( '', 'easy-albums' ),
+			'menu_name' => __( 'Albums', 'easy-albums' )
 		);
 		$args = array(
 			'labels' => $labels,
@@ -113,8 +122,8 @@ class Galleries_and_Albums {
 		 */
 		function register_album_meta_box( $post ) {
 			wp_enqueue_script('jquery-ui-sortable');
-			add_meta_box( 'gallerypicker', 'Galleries', array( &$this, 'the_album_box' ), $post->post_type, 'normal' );
-			add_meta_box( 'albumpreview', 'Preview', array( &$this, 'the_album_preview_box' ), $post->post_type, 'normal' );
+			add_meta_box( 'gallerypicker', __( 'Galleries', 'easy-albums' ), array( &$this, 'the_album_box' ), $post->post_type, 'normal' );
+			add_meta_box( 'albumpreview', __( 'Preview', 'easy-albums' ), array( &$this, 'the_album_preview_box' ), $post->post_type, 'normal' );
 		}
 
 			/**
@@ -123,7 +132,9 @@ class Galleries_and_Albums {
 			 */
 			function the_album_box( $post ) {
 
-				echo '<p class="description">You can drag the names to change their order.</p>';
+				echo '<p class="description">';
+				_e( 'You can drag the names to change their order.', 'easy-albums' );
+				echo '</p>';
 
 				$savedgalleries = (array) get_post_meta( $post->ID, 'galleries', true );
 
@@ -144,7 +155,9 @@ class Galleries_and_Albums {
 
 				$allgalleries = array_merge( $chkd, $unchkd );
 				if ( count( $allgalleries ) < 1 ) {
-					echo '<p><em>No galleries created yet</em></p>';
+					echo '<p><em>';
+					_e( 'No galleries created yet', 'easy-albums' );
+					echo '</em></p>';
 					return;
 				}
 
@@ -153,7 +166,7 @@ class Galleries_and_Albums {
 				foreach( $allgalleries as $gallery ) {
 					$s = in_array( $gallery->ID, $savedgalleries ) ? " checked='checked'" : '';
 					$title = get_the_title( $gallery->ID );
-					if ( empty( $title ) ) $title = '<em>no title</em>';
+					if ( empty( $title ) ) $title = '<em>'. __( 'no title', 'easy-albums' ). '</em>';
 					echo "<li><label><input type='checkbox' name='galleries[]' value='{$gallery->ID}'$s /> {$title}</label></li>";
 				}
 				echo '</ul>';
@@ -172,7 +185,9 @@ class Galleries_and_Albums {
 			 * Fill in "Preview" metabox for Albums CPT
 			 */
 			function the_album_preview_box( $post ) {
-				echo '<p class="description">Preview updates on save. Links disabled.</em></p>';
+				echo '<p class="description">';
+				_e( 'Preview updates on save. Links disabled.', 'easy-albums' );
+				echo '</em></p>';
 				echo do_shortcode( "[album id='{$post->ID}' nolinks=1]" );
 			}
 
@@ -192,8 +207,8 @@ class Galleries_and_Albums {
 	 */
 	function manage_gallery_posts_columns( $columns ) {
 		unset( $columns['date'] );
-		$columns['gallerythumb'] = 'Thumbnail';
-		$columns['date'] = 'Date';
+		$columns['gallerythumb'] = __( 'Thumbnail', 'easy-albums' );
+		$columns['date'] = __( 'Date', 'easy-albums' );
 
 		return $columns;
 	}
@@ -211,8 +226,8 @@ class Galleries_and_Albums {
 	 */
 	function manage_album_posts_columns( $columns ) {
 		unset( $columns['date'] );
-		$columns['albumpreview'] = 'Preview';
-		$columns['date'] = 'Date';
+		$columns['albumpreview'] = __( 'Preview', 'easy-albums' );
+		$columns['date'] = __( 'Date', 'easy-albums' );
 
 		return $columns;
 	}
@@ -232,7 +247,9 @@ class Galleries_and_Albums {
 		if ( $this->album_cpt != get_post_type() ) return;
 		global $post;
 		if ( empty( $post->post_name ) ) return;
-		echo "<p>Embed this album in a post or page by using: <code>[album name='{$post->post_name}']</code></p>";
+		echo '<p>';
+		printf( __('Embed this album in a post or page by using: %s', 'easy-albums' ), "<code>[album name='{$post->post_name}']</code>" );
+		echo '</p>';
 	}
 
 	/**
@@ -240,7 +257,9 @@ class Galleries_and_Albums {
 	 */
 	function gallery_edit_form_after_editor() {
 		if ( $this->gallery_cpt != get_post_type() ) return;
-		echo '<p>You can include just about any content in these galleries, but it works best with a gallery shortcode. <span class="description">e.g. <code>[gallery ids="123,456"]</code></span></p>';
+		echo '<p>';
+		printf( __( 'You can include just about any content in these galleries, but it works best with a gallery shortcode such as %s', 'easy-albums' ), '<code>[gallery ids="123,456"]</code>' );
+		echo '</p>';
 	}
 
 	/**
@@ -383,7 +402,7 @@ class Galleries_and_Albums {
  * @param string $att_string Attributes inherited from [album] shortcode
  */
 function get_sub_gallery( $back, $gal_id, $att_string ) {
-	$back = "<p><a class='backtoalbum' href='$back'>&larr; Back</a></p>";
+	$back = "<p><a class='backtoalbum' href='$back'>". __( '&larr; Back', 'easy-albums') ."</a></p>";
 	$gal = get_post( $gal_id );
 
 	// insert inheritable shortcode attributes

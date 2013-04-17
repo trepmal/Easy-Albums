@@ -6,7 +6,7 @@ if ( ! defined('ABSPATH') )
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>Select Album</title>
+	<title><?php _e( 'Select Album', 'easy-albums' ); ?></title>
 	<meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo get_option('blog_charset'); ?>" />
 	<script language="javascript" type="text/javascript" src="<?php echo includes_url('js/tinymce/tiny_mce_popup.js'); ?>"></script>
 	<base target="_self" />
@@ -42,7 +42,7 @@ function insertLink(evt) {
 	<form action="#">
 		<div class="tabs">
 			<ul>
-				<li class="current"><span>Select an album</span></li>
+				<li class="current"><span><?php _e( 'Select an album', 'easy-albums'); ?></span></li>
 			</ul>
 		</div>
 
@@ -57,13 +57,15 @@ function insertLink(evt) {
 
 					foreach( $allalbums as $a ) {
 						$title = get_the_title( $a->ID );
-						if ( empty( $title ) ) $title = 'no title';
+						if ( empty( $title ) ) $title = __( 'no title', 'easy-albums' );
 						echo "<option value='{$a->ID}'>{$title}</option>";
 					}
 
 					echo '</select>';
 				} else {
-					echo '<p>You haven\'t created any albums yet</p>';
+					echo '<p>';
+					_e( 'You haven\'t created any albums yet', 'easy-albums' );
+					echo '</p>';
 				}
 				?>
 				</td>
@@ -74,11 +76,11 @@ function insertLink(evt) {
 
 		<div class="mceActionPanel">
 			<div style="float: left">
-				<input type="button" id="cancel" name="cancel" value="<?php _e("Cancel"); ?>" onclick="tinyMCEPopup.close();" />
+				<input type="button" id="cancel" name="cancel" value="<?php _e( 'Cancel', 'easy-albums'); ?>" onclick="tinyMCEPopup.close();" />
 			</div>
 
 			<div style="float: right">
-				<input type="submit" id="insert" name="insert" value="<?php _e("Insert"); ?>" onclick="insertLink(event);" />
+				<input type="submit" id="insert" name="insert" value="<?php _e('Insert', 'easy-albums'); ?>" onclick="insertLink(event);" />
 			</div>
 		</div>
 	</form>

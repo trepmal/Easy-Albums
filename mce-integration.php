@@ -22,6 +22,9 @@ class Albums_MCE_Button {
 		// init process for ajax popup
 		add_action('wp_ajax_albums_tinymce', array( &$this, 'window_cb') );
 
+		// localize
+		add_filter( 'mce_external_languages', array( &$this, 'mce_external_languages' ) );
+
 	}
 
 	/**
@@ -88,6 +91,11 @@ class Albums_MCE_Button {
 		die();
 	}
 
+	function mce_external_languages( $s ) {
+		$s[ $this->pluginname ] = plugin_dir_path(__FILE__) .'mce/lang.php';
+		// $s[] = plugin_dir_path(__FILE__) .'mce/lang.php';
+		return $s;
+	}
 }
 
 //eof
